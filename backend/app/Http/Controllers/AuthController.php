@@ -16,7 +16,7 @@ class AuthController extends Controller
 
             if (Auth::attempt($request->only('email', 'password'))) {
                 $user = Auth::user();
-                
+
                 $token = $user->createToken('app')->accessToken;
                 return response([
                     'message' => 'Successfully logged in',
@@ -37,11 +37,20 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         try {
+            $request->validate([
+                'name' => 'required|min:3',
+                'email' => 'required|email|unique:users',
+                'password' => 'required|min:6'
+            ]);
+
             $user = new User();
             $user->name = $request->name;
             $user->email = $request->email;
             $user->password  = bcrypt($request->password);
             $user->save();
+
+            //login
+            Auth::attempt($request->only('email', 'password'));
 
             $token = $user->createToken('app')->accessToken;
 
@@ -61,5 +70,27 @@ class AuthController extends Controller
         return response([
             'message' => 'Error occurred during registration'
         ], 401);
+    }
+
+    public function user(Request $request)
+    {
+        $user = Auth::user();
+        if ($user) {
+            return response([
+                'user' => $user
+            ], 200);
+        }
+        return response([
+            'message' => 'You are not logged in'
+        ], 404);
+    }
+
+    public function logout(Request $request)
+    {
+        $token = $request->user()->token();
+        $token->revoke();
+        return response([
+            'message' => 'Successfully logged out'
+        ], 200);
     }
 }
