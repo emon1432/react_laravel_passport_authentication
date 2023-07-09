@@ -50,7 +50,7 @@ class AuthController extends Controller
             $user->save();
 
             //login
-            Auth::attempt($request->only('email', 'password'));
+            // Auth::attempt($request->only('email', 'password'));
 
             $token = $user->createToken('app')->accessToken;
 
