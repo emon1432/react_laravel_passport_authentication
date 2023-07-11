@@ -1,16 +1,25 @@
+import axios from "axios";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router } from "react-router-dom";
 import Header from "./common/Header";
 import reportWebVitals from "./reportWebVitals";
-import Routes from "./routes";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
+//set base url for api calls
+axios.defaults.baseURL = "http://127.0.0.1:8000/api";
+
+//token
+const token = localStorage.getItem("token");
+if (token) {
+  axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+}
+
 root.render(
   <React.StrictMode>
     <Router>
       <Header />
-      <Routes />
     </Router>
   </React.StrictMode>
 );

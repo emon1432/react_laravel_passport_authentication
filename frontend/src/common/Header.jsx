@@ -1,56 +1,44 @@
+import axios from "axios";
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
+import Home from "../components/Home";
+import Login from "../components/Login";
+import Profile from "../components/Profile";
+import Register from "../components/Register";
+import Nav from "./Nav";
 
 export class Header extends Component {
+  state = {
+    user: {},
+  };
+  componentDidMount() {
+    axios
+      .get("/user")
+      .then((res) => {
+        this.setUser(res.data.user);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  setUser = (user) => {
+    this.setState({ user });
+  };
+
   render() {
     return (
       <div>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-          <div class="container-fluid">
-            <Link class="navbar-brand" to="/">
-              Laravel Passport
-            </Link>
-            <button
-              class="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarText"
-              aria-controls="navbarText"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarText">
-              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                  <Link class="nav-link" to="/profile">
-                    Profile
-                  </Link>
-                </li>
-              </ul>
-              <span class="navbar-text">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                  <li class="nav-item">
-                    <Link class="nav-link" aria-current="page" to="/login">
-                      Login
-                    </Link>
-                  </li>
-                  <li class="nav-item">
-                    <Link class="nav-link" to="/register">
-                      Register
-                    </Link>
-                  </li>
-                  <li class="nav-item">
-                    <Link class="nav-link" to="/logout">
-                      Logout
-                    </Link>
-                  </li>
-                </ul>
-              </span>
-            </div>
-          </div>
-        </nav>
+        <Nav user={this.state.user} setUser={this.setUser} />
+        <Routes>
+          <Route exact path="/" element={<Home />} />
+          <Route
+            exact
+            path="/profile"
+            element={<Profile user={this.state.user} />}
+          />
+          <Route exact path="/login" element={<Login setUser={this.setUser} />} />
+          <Route exact path="/register" element={<Register />} />
+        </Routes>
       </div>
     );
   }
