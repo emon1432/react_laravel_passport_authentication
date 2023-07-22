@@ -27,6 +27,9 @@ class Login extends Component {
     if (this.state.loggedIn) {
       return <Navigate to="/profile" />;
     }
+    if (localStorage.getItem("token")) {
+      return <Navigate to="/profile" />;
+    }
     return (
       <>
         <div className="container">

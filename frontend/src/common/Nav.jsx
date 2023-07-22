@@ -51,7 +51,7 @@ class Nav extends Component {
                   <li className="nav-item">
                     <Link
                       className="nav-link"
-                      to="/logout"
+                      to="/"
                       onClick={() => {
                         localStorage.removeItem("token");
                         this.props.setUser({});
